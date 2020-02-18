@@ -8,5 +8,10 @@
     },
     "Node": {
         "port": 4300
+    },
+    "Authentication": {
+        "issuer": "mahj-backend",
+        "expiresIn": "7d",
+        "algorithm": "RS256"
     }
 }

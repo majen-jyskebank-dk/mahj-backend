@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router();
+
+const wolDevices = require('./api.wolDevices');
 const authentication = require('../authentication');
 const user = require('../controllers/user.controller');
-const wolDevice = require('../controllers/wol-device.controller');
+
+router.use('/wolDevices', wolDevices);
 
 router.get('/ping', (req, res) => {
     res.status(200).send('Pong');
@@ -20,18 +23,6 @@ router.get('/authentication/login', async (req, res) => {
 router.get('/authentication/verify', (req, res) => {
     let token = req.headers.authorization.split(' ')[1];
     res.status(200).send(authentication.verify(token));
-});
-
-router.get('/wolDevices', async (req, res) => {
-    res.status(200).send(await wolDevice.list());
-});
-
-router.get('/wolDevices/:_id', async (req, res) => { 
-    res.status(200).send(await wolDevice.get(req.params._id));
-});
-
-router.post('/wolDevices', async (req, res) => {
-    res.status(200).send(await wolDevice.post(req.body));
 });
 
 router.post('/user', async (req, res) => {

@@ -13,7 +13,17 @@ const wolDevices = [{ }];
 
 app.use(bodyParser.json());
 app.use((req, res, next) => { addCorrelation(req, res, next); });
-app.use((req, res, next) => { audit(req, res, next); });
+
+app.use((req, res, next) => {
+    function after() {
+        res.removeListener('finish', after);
+        audit(req, res);
+    }
+
+    res.on('finish', after);
+    next();
+})
+
 app.use('/api', api);
 
 io.on('connection', socket => {

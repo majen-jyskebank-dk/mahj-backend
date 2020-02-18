@@ -1,14 +1,15 @@
 const uuid = require('uuid/v1');
 const fs = require('fs');
 
+const util = require('util');
+
 exports.addCorrelation = (req, res, next) => {
     req.correlationId = uuid();
     next();
 };
 
 exports.audit = (req, res, next) => {
-    log('audit', `[AUDIT] ${ getTime() }: [${ req.method }] ${req.url} | ${ req.correlationId }`);
-    next();
+    log('audit', `[AUDIT] ${ getTime() }: [${ req.method }] ${ req.url } | statusCode:${ res.statusCode } | ${ req.correlationId }`);
 };
 
 const log = (type, message) => {

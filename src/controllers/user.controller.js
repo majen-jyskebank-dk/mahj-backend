@@ -11,7 +11,6 @@ exports.isValid = async (user) => {
     return false;
 };
 
-
 exports.post = async (user) => {
     const hashedPassword = cryptoUtil.saltHashPassword(user.password);
     return await new User({ 
