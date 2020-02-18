@@ -16,9 +16,12 @@ router.get('/authentication/verify', (req, res) => {
     res.status(200).send(authentication.verify(token, { issuer: 'mahj-backend' }));
 });
 
+router.get('/user', (req, res) => {
+    user.get(req, res);
+});
+
 router.post('/user', (req, res) => {
-    user.post(req, res);
-    res.status(200).send();
+    res.status(200).send(user.post(req, res));
 });
 
 module.exports = router;

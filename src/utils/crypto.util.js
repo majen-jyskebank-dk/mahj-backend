@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 
-exports.saltHashPassword = (password) => {
-    return sha512(password, genRandomString(16));
+exports.saltHashPassword = (password, salt = genRandomString(16)) => {
+    return sha512(password, salt);
 }
 
 genRandomString = (length) => {
