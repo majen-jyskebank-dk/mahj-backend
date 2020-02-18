@@ -1,7 +1,8 @@
 const crypto = require('crypto');
+const config = require('config').get('Authentication');
 
 exports.saltHashPassword = (password, salt = genRandomString(16)) => {
-    return sha512(password, salt);
+    return hash(password, salt);
 }
 
 genRandomString = (length) => {
@@ -10,8 +11,8 @@ genRandomString = (length) => {
         .slice(0, length);
 };
 
-sha512 = (password, salt) => {
-    let hash = crypto.createHmac('sha512', salt);
+hash = (password, salt) => {
+    let hash = crypto.createHmac(config.algorithm, salt);
     hash.update(password);
     return { salt, passwordHash: hash.digest('hex') };
 };

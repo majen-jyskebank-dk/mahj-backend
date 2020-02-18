@@ -1,6 +1,7 @@
 const api = require('./routes/api');
 const bodyParser = require('body-parser');
 const config = require('config').get('Node');
+const { audit, addCorrelation } = require('./utils/logger.util');
 
 const app = require('express')();
 const http = require('http').Server(app);
@@ -11,6 +12,8 @@ require('./utils/mongo.util').connect();
 const wolDevices = [{ }];
 
 app.use(bodyParser.json());
+app.use((req, res, next) => { addCorrelation(req, res, next); });
+app.use((req, res, next) => { audit(req, res, next); });
 app.use('/api', api);
 
 io.on('connection', socket => {

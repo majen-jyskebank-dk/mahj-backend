@@ -3,7 +3,7 @@
         "username": "",
         "password": "",
         "host": "localhost",
-        "port": "27015",
+        "port": "27017",
         "database": "mahj-backend"
     },
     "Node": {

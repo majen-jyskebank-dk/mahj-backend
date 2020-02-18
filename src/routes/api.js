@@ -19,7 +19,7 @@ router.get('/authentication/login', async (req, res) => {
 
 router.get('/authentication/verify', (req, res) => {
     let token = req.headers.authorization.split(' ')[1];
-    res.status(200).send(authentication.verify(token, { issuer: 'mahj-backend' }));
+    res.status(200).send(authentication.verify(token));
 });
 
 router.get('/wolDevices', async (req, res) => {
@@ -33,7 +33,6 @@ router.get('/wolDevices/:_id', async (req, res) => { 
 router.post('/wolDevices', async (req, res) => {
     res.status(200).send(await wolDevice.post(req.body));
 });
-
 
 router.post('/user', async (req, res) => {
     res.status(200).send(await user.post(req.body));
