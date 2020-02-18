@@ -1,23 +1,22 @@
 const User = require('../models/user.model');
 const cryptoUtil = require('../utils/crypto.util');
-const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/mahj-backend', { useNewUrlParser: true, useUnifiedTopology: true });
+require('../utils/mongo.util').connect();
 
-exports.get = async (req, res) => {
-    const foundUser = await User.findOne({ username: req.body.username });
+exports.isValid = async (user) => {
+    const foundUser = await User.findOne({ username: user.username });
     if (foundUser !== null) {
-        if (foundUser.passwordHash === cryptoUtil.saltHashPassword(req.body.password, foundUser.salt).passwordHash) {
-            return res.status(200).send({ success: true });
+        if (foundUser.passwordHash === cryptoUtil.saltHashPassword(user.password, foundUser.salt).passwordHash) {
+            return true;
         }
     }
-    return res.status(401).send({ success: false });
+    return false;
 };
 
 
-exports.post = (req, res) => {
-    const hashedPassword = cryptoUtil.saltHashPassword(req.body.password);
-    return new User({ 
-        username: req.body.username,
+exports.post = async (user) => {
+    const hashedPassword = cryptoUtil.saltHashPassword(user.password);
+    return await new User({ 
+        username: user.username,
         passwordHash: hashedPassword.passwordHash,
         salt: hashedPassword.salt
      }).save();

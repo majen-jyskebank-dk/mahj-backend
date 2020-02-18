@@ -1,5 +1,6 @@
 const api = require('./routes/api');
 const bodyParser = require('body-parser');
+const config = require('config').get('Node');
 
 const app = require('express')();
 const http = require('http').Server(app);
@@ -21,6 +22,6 @@ io.on('connection', socket => {
     });
 });
 
-http.listen(4300, () => {
-    console.log('Listening on port 4300');
+http.listen(config.port, () => {
+    console.log(`Listening on ${config.port}`);
 });

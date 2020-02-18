@@ -7,8 +7,13 @@ router.get('/ping', (req, res) => {
     res.status(200).send('Pong');
 });
 
-router.get('/authentication/sign', (req, res) => {   
-    res.status(200).send(authentication.sign({ }, { issuer: 'mahj-backend' }));
+router.get('/authentication/login', async (req, res) => {   
+    const receivedUser = req.body;
+    if (await user.isValid(receivedUser)) {
+        res.status(200).send(authentication.sign({ }, { issuer: 'mahj-backend' }));
+    } else {
+        res.status(401).send({ error: { code: '1000', message: 'Invalid username or password' } });
+    }
 });
 
 router.get('/authentication/verify', (req, res) => {
@@ -16,12 +21,8 @@ router.get('/authentication/verify', (req, res) => {
     res.status(200).send(authentication.verify(token, { issuer: 'mahj-backend' }));
 });
 
-router.get('/user', (req, res) => {
-    user.get(req, res);
-});
-
-router.post('/user', (req, res) => {
-    res.status(200).send(user.post(req, res));
+router.post('/user', async (req, res) => {
+    res.status(200).send(await user.post(req.body));
 });
 
 module.exports = router;

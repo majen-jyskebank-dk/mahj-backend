@@ -1,0 +1,12 @@
+{
+    "Database": {
+        "username": "",
+        "password": "",
+        "host": "localhost",
+        "port": "27015",
+        "database": "mahj-backend"
+    },
+    "Node": {
+        "port": 4300
+    }
+}
