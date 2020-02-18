@@ -1,6 +1,5 @@
 const User = require('../models/user.model');
 const cryptoUtil = require('../utils/crypto.util');
-require('../utils/mongo.util').connect();
 
 exports.isValid = async (user) => {
     const foundUser = await User.findOne({ username: user.username });

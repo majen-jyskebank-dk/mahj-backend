@@ -6,6 +6,8 @@ const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
+require('./utils/mongo.util').connect();
+
 const wolDevices = [{ }];
 
 app.use(bodyParser.json());
