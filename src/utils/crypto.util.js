@@ -1,5 +1,5 @@
-const crypto = require('crypto');
 const config = require('config').get('Crypto');
+const crypto = require('crypto');
 
 exports.saltHashPassword = (password, salt = genRandomString(config.stringLength)) => {
     return hash(password, salt);

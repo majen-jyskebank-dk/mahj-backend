@@ -1,8 +1,8 @@
 const logger = require('./utils/logger.util');
+const config = require('config').get('Authentication');
 
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
-const config = require('config').get('Authentication');
 
 const privateKey = fs.readFileSync('./keys/private.key', 'utf8');
 const publicKey = fs.readFileSync('./keys/public.key', 'utf8');

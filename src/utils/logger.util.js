@@ -1,23 +1,31 @@
+const config = require('config').get('Logging');
+
 const uuid = require('uuid/v1');
 const fs = require('fs');
-
-const util = require('util');
 
 exports.addCorrelation = (req, res, next) => {
     req.correlationId = uuid();
     next();
 };
 
+exports.server = (message) => {
+    if (config.enableServer) log('server', `[SERVER] ${ getTime() }: ${ message }`);
+};
+
+exports.serverError = (message, error) => {
+    if (config.enableServer) log('server', `[SERVER] ${ getTime() }: ${ message } | ${ error }`);
+};
+
 exports.audit = (req, res) => {
-    log('audit', `[AUDIT] ${ getTime() }: [${ req.method }] ${ req.url } | ${ res.statusCode } | ${ req.correlationId }`);
+    if (config.enableAudit) log('audit', `[AUDIT] ${ getTime() }: [${ req.method }] ${ req.url } | ${ res.statusCode } | ${ req.correlationId }`);
 };
 
 exports.info = (req, res, message) => {
-    log('server', `[INFO] ${ getTime() }: ${ message } | ${ req.correlationId }`);
+    if (config.enableInfo) log('server', `[INFO] ${ getTime() }: ${ message } | ${ req.correlationId }`);
 };
 
 exports.error = (req, res, message, error) => {
-    log('server', `[ERROR] ${ getTime() }: ${ message } | ${ error } | ${ req.correlationId }`);
+    if (config.enableError) log('server', `[ERROR] ${ getTime() }: ${ message } | ${ error } | ${ req.correlationId }`);
 };
 
 const log = (type, message) => {

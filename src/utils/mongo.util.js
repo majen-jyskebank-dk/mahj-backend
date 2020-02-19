@@ -1,12 +1,13 @@
+const logger = require('./logger.util');
 const config = require('config').get('Database');
 const mongoose = require('mongoose');
 
 exports.connect = () => {
     mongoose.connect(uri(), { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }, (err) => {
         if (err) {
-            console.error('Couldn\'t connect to database', e);
+            logger.serverError('Couldn\'t connect to database', e);
         } else {
-            console.log('Connected to database');
+            logger.server('Connected to database');
         }
     });
 }
