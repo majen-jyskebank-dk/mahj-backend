@@ -3,13 +3,17 @@ const logger = require('../utils/logger.util');
 const express = require('express');
 const router = express.Router();
 
+const user = require('../controllers/user.controller');
+
 const authentication = require('../authentication');
 
-router.get('/login', async (req, res) => {   
+router.post('/login', async (req, res) => {   
     const receivedUser = req.body;
+    logger.info(req, res, JSON.stringify(receivedUser));
+
     try {
         if (await user.isValid(receivedUser)) {
-            const token = await authentication.sign({ }, { issuer: 'mahj-backend' });
+            const token = authentication.sign({ });
             logger.info(req, res, `Signed token succesfully for user: ${ receivedUser.username }`);
             return res.status(200).send({ error: null, response: token })
         } else {

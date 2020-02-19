@@ -6,10 +6,12 @@ const bodyParser = require('body-parser');
 const http = require('http').Server(app);
 const api = require('./routes/api');
 
+const cors = require('cors');
 const io = require('socket.io')(http);
 
 require('./utils/mongo.util').connect();
 
+app.use(cors());
 app.use(bodyParser.json());
 
 app.use((req, res, next) => { logger.addCorrelation(req, res, next); });
