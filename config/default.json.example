@@ -17,5 +17,11 @@
     "Crypto": {
         "stringLength": 16,
         "algorithm": "SHA512"
+    },
+    "Logging": {
+        "enableServer": true,
+        "enableError": true,
+        "enableAudit": true,
+        "enableInfo": false
     }
 }

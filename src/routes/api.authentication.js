@@ -23,7 +23,7 @@ router.post('/login', async (req, res) => {
         logger.error(req, res, `Caught error while doing login for user: ${ receivedUser.username }`, err);
     }
 
-    res.status(401).send({ error: { code: '1000', message: 'Invalid username or password' }, response: null });
+    res.status(400).send({ error: { code: '1000', message: 'Invalid username or password' }, response: null });
 });
 
 router.get('/verify', (req, res) => {
