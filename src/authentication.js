@@ -1,3 +1,5 @@
+const logger = require('./utils/logger.util');
+
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const config = require('config').get('Authentication');
@@ -5,7 +7,7 @@ const config = require('config').get('Authentication');
 const privateKey = fs.readFileSync('./keys/private.key', 'utf8');
 const publicKey = fs.readFileSync('./keys/public.key', 'utf8');
 
-exports.sing = (payload, options) => {
+exports.sign = (payload) => {
     const signOptions = {
         issuer: config.issuer,
         expiresIn: config.expiresIn,
@@ -19,7 +21,7 @@ exports.authenticate = (req, res, next) => {
     const verifyOptions = {
         issuer: config.issuer,
         expiresIn: config.expiresIn,
-        algorithm: [config.algorithm]
+        algorithm: [ config.algorithm ]
     };
 
     try {

@@ -8,8 +8,16 @@ exports.addCorrelation = (req, res, next) => {
     next();
 };
 
-exports.audit = (req, res, next) => {
-    log('audit', `[AUDIT] ${ getTime() }: [${ req.method }] ${ req.url } | statusCode:${ res.statusCode } | ${ req.correlationId }`);
+exports.audit = (req, res) => {
+    log('audit', `[AUDIT] ${ getTime() }: [${ req.method }] ${ req.url } | ${ res.statusCode } | ${ req.correlationId }`);
+};
+
+exports.info = (req, res, message) => {
+    log('server', `[INFO] ${ getTime() }: ${ message } | ${ req.correlationId }`);
+};
+
+exports.error = (req, res, message, error) => {
+    log('server', `[ERROR] ${ getTime() }: ${ message } | ${ error } | ${ req.correlationId }`);
 };
 
 const log = (type, message) => {
@@ -17,16 +25,15 @@ const log = (type, message) => {
         fs.mkdirSync('./logs');
     }
 
-    fs.appendFileSync(`./logs/${ type }.log`, `${message}\n`, (err) => {
-        if (err) {
-            console.error(`Caught error while attempting to log message type: ${ type }`, e);
-        } else {
-            console.log(message);
-        }
-    });
+    try {
+        fs.appendFileSync(`./logs/${ type }.log`, `${message}\n`);
+        console.log(message);
+    } catch(err) {
+        console.error(`Caught error while attempting to log message type: ${ type }`, e);
+    }
 };
 
 const getTime = () => {
     let now = new Date();
-    return `${ now.getFullYear() }-${ now.getMonth() }-${ now.getDate() } ${ now.getHours() }:${ now.getMinutes() }:${ now.getSeconds() },${ now.getMilliseconds() }`
+    return `${ now.getFullYear() }-${ now.getMonth() + 1 }-${ now.getDate() } ${ now.getHours() }:${ now.getMinutes() }:${ now.getSeconds() },${ now.getMilliseconds() }`
 };

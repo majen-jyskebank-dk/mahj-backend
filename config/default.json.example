@@ -13,5 +13,9 @@
         "issuer": "mahj-backend",
         "expiresIn": "7d",
         "algorithm": "RS256"
+    },
+    "Crypto": {
+        "stringLength": 16,
+        "algorithm": "SHA512"
     }
 }

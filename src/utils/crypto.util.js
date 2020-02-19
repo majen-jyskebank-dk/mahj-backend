@@ -1,7 +1,7 @@
 const crypto = require('crypto');
-const config = require('config').get('Authentication');
+const config = require('config').get('Crypto');
 
-exports.saltHashPassword = (password, salt = genRandomString(16)) => {
+exports.saltHashPassword = (password, salt = genRandomString(config.stringLength)) => {
     return hash(password, salt);
 }
 
