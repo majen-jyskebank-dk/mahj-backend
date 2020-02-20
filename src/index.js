@@ -8,6 +8,7 @@ const api = require('./routes/api');
 
 const cors = require('cors');
 const io = require('socket.io')(http);
+require('./sockets/wolDevices.socket')(io);
 
 require('./utils/mongo.util').connect();
 
@@ -26,17 +27,6 @@ app.use((req, res, next) => {
 })
 
 app.use('/api', api);
-
-io.on('connection', socket => {
-    socket.on('getWolDevices', () => {
-        socket.emit('wolDevices', null); // TODO: Fetch from mongo or similar
-    });
-
-    socket.on('wakeWolDevice', wolDeviceId => {
-        // TODO: Wake WOL device
-        socket.emit('wakingWolDevice', null); // TODO: Device beign awakened
-    });
-});
 
 http.listen(config.port, () => {
     logger.server(`Listening on ${config.port}`);

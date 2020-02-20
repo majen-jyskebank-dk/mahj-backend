@@ -9,7 +9,6 @@ const authentication = require('../authentication');
 
 router.post('/login', async (req, res) => {   
     const receivedUser = req.body;
-    logger.info(req, res, JSON.stringify(receivedUser));
 
     try {
         if (await user.isValid(receivedUser)) {

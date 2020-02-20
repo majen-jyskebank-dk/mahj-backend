@@ -1,4 +1,3 @@
-const logger = require('./utils/logger.util');
 const config = require('config').get('Authentication');
 
 const jwt = require('jsonwebtoken');
