@@ -1,5 +1,8 @@
+const config = require('config').get('WOL');
+
 const WolDevice = require('../models/wol-device.model');
 const ping = require('../utils/ping.util');
+const wol = require('../utils/wol.util');
 
 exports.get = async (_id) => {
     return await WolDevice.findOne({ _id }).lean().exec();
@@ -20,15 +23,23 @@ exports.post = async (wolDevice) => {
 };
 
 exports.wake = async (_id) => {
-    const ms = Math.random() * (2000 - 250) + 250;
-    console.log(`Attempting to wake device (and sleeping ${ ms } ms)`);
-    await sleep(ms);
-    return false;
+    let wolDevice = await this.get(_id);
+    return await wol.wake(wolDevice.macAddress);
 };
 
 exports.status = async(_id) => {
     let wolDevice = await this.get(_id);
     return await ping.isAlive(wolDevice.localIpAddress);
+}
+
+exports.pollStatus = async (_id) => {
+    for (let i = 0; i < config.pollTries; i++) {
+        if (await this.status(_id)) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 sleep = (ms) => {

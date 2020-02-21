@@ -8,7 +8,7 @@ const api = require('./routes/api');
 
 const cors = require('cors');
 const io = require('socket.io')(http);
-require('./sockets/wolDevices.socket')(io);
+require('./sockets/wol-device.socket')(io);
 
 require('./utils/mongo.util').connect();
 
