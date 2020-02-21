@@ -1,4 +1,5 @@
 const WolDevice = require('../models/wol-device.model');
+const ping = require('../utils/ping.util');
 
 exports.get = async (_id) => {
     return await WolDevice.findOne({ _id }).lean().exec();
@@ -26,10 +27,9 @@ exports.wake = async (_id) => {
 };
 
 exports.status = async(_id) => {
-    const ms = Math.random() * (2000 - 250) + 250;
-    console.log(`Attempting to get status for device (and sleeping ${ ms } ms)`);
-    await sleep(ms);
-    return true;
+    console.log(`Attempting to get status for device`);
+    let wolDevice = await this.get(_id);
+    return await ping.isAlive(wolDevice.localIpAddress);
 }
 
 sleep = (ms) => {
