@@ -17,18 +17,22 @@ exports.sign = (payload) => {
 };
 
 exports.authenticate = (req, res, next) => {
+    try {
+        token = req.headers.authorization.split(' ')[1];
+        if (this.verify(token)) {
+            next();
+        }
+    } catch (err) {
+        return res.status(401).send({ error: { code: 1001, message: 'Unauthorized token' } });
+    }
+};
+
+exports.verify = (token) => {
     const verifyOptions = {
         issuer: config.issuer,
         expiresIn: config.expiresIn,
         algorithm: [ config.algorithm ]
     };
 
-    try {
-        token = req.headers.authorization.split(' ')[1];
-        if (jwt.verify(token, publicKey, verifyOptions)) {
-            next();
-        }
-    } catch (err) {
-        return res.status(401).send({ error: { code: 1001, message: 'Unauthorized token' } });
-    }
+    return jwt.verify(token, publicKey, verifyOptions)
 };
