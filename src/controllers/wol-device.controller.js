@@ -25,6 +25,13 @@ exports.wake = async (_id) => {
     return false;
 };
 
+exports.status = async(_id) => {
+    const ms = Math.random() * (2000 - 250) + 250;
+    console.log(`Attempting to get status for device (and sleeping ${ ms } ms)`);
+    await sleep(ms);
+    return true;
+}
+
 sleep = (ms) => {
     return new Promise((resolve) => {
         setTimeout(resolve, ms);
