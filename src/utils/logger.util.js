@@ -17,7 +17,7 @@ exports.serverError = (message, error) => {
 };
 
 exports.audit = (req, res) => {
-    if (config.enableAudit) log('audit', `${ getTime() } [AUDIT]: [${ req.method }] ${ req.url } | ${ res.statusCode } | ${ req.correlationId }`);
+    if (config.enableAudit) log('audit', `${ getTime() } [AUDIT]: [${ req.method }] ${ req.originalUrl } | ${ res.statusCode } | ${ req.correlationId }`);
 };
 
 exports.info = (req, res, message) => {
