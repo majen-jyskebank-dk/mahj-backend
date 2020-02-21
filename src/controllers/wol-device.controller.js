@@ -27,7 +27,6 @@ exports.wake = async (_id) => {
 };
 
 exports.status = async(_id) => {
-    console.log(`Attempting to get status for device`);
     let wolDevice = await this.get(_id);
     return await ping.isAlive(wolDevice.localIpAddress);
 }
