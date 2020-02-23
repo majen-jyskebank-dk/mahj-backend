@@ -1,28 +1,53 @@
 const logger = require('../utils/logger.util');
 
-const { verify } = require('../authentication');
-const wolDevice = require('../controllers/wol-device.controller');
+const authentication = require('../authentication');
+const wolDevices = require('../controllers/wol-device.controller');
 
+let shouldPoll = false; // TODO: This is a bad solution, limits clients to 1
 
-module.exports = (io) => {
-    io.on('connection', async socket => {
-        socket.on('requestStatus', async data => {
-            if (!verify(data.token)) return socket.emit('unauthorized');
+module.exports = async (io) => {
+    const wolDevicesList = await wolDevices.list();
 
-            logger.server(`Received requestStatus event with data: ${ data._id }`);
-            socket.emit('statusUpdate', { _id: data._id, isAwake: await wolDevice.status(data._id) });
+    io.on('connection', (socket) => {
+        socket.on('authenticate', (data) => {
+            shouldPoll = true;
+
+          if (authentication.verify(data.token)) {
+            socket.emit('authenticated', logger.server('Authenticated client socket'));
+
+            wolDevicesList.forEach(wolDevice => {
+                pollStatus(socket, wolDevice._id);
+            });
+
+            socket.on('wakeWolDevice', (data) => {
+                logger.server(`Attempting to wake ${ data._id }`);
+                wolDevices.wake(data._id);
+            });
+          }
         });
 
-        socket.on('wakeWolDevice', async data => {
-            if (!verify(data.token)) return socket.emit('unauthorized');
-
-            logger.server(`Received wakeWolDevice event for ${ data._id }`);
-            await wolDevice.wake(data._id)
-            
-            logger.server(`Polling for status changes on ${ data._id }`);
-            socket.emit('statusUpdate', { _id: data._id, isAwake: await wolDevice.pollStatus(data._id) });
+        socket.on('disconnect', () => {
+            shouldPoll = false;
         });
+    });
+};
 
-        io.emit('wolDevices', await wolDevice.list());
+
+const pollStatus = async (socket, _id) => {
+    let currentState, previousState;
+
+    while (shouldPoll) {
+        currentState = await wolDevices.status(_id);
+        if (currentState != previousState) {       
+            previousState = currentState;
+            socket.emit('statusUpdate', { _id, isAwake: currentState });
+        }
+        await sleep(1000);
+    }
+}
+
+sleep = (ms) => {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
     });
 };

@@ -41,9 +41,3 @@ exports.pollStatus = async (_id) => {
 
     return false;
 }
-
-sleep = (ms) => {
-    return new Promise((resolve) => {
-        setTimeout(resolve, ms);
-    });
-};

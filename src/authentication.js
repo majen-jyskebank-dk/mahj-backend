@@ -28,11 +28,17 @@ exports.authenticate = (req, res, next) => {
 };
 
 exports.verify = (token) => {
-    const verifyOptions = {
+    return jwt.verify(token, this.publicKey(), this.verifyOptions())
+};
+
+exports.verifyOptions = () => {
+    return {
         issuer: config.issuer,
         expiresIn: config.expiresIn,
         algorithm: [ config.algorithm ]
     };
-
-    return jwt.verify(token, publicKey, verifyOptions)
 };
+
+exports.publicKey = () => {
+    return publicKey;
+}

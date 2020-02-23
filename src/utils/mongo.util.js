@@ -5,7 +5,8 @@ const mongoose = require('mongoose');
 exports.connect = () => {
     mongoose.connect(uri(), { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }, (err) => {
         if (err) {
-            logger.serverError('Couldn\'t connect to database', e);
+            logger.serverError('Couldn\'t connect to database, attempting to reconnect', err);
+            setTimeout(this.connect, 5000);
         } else {
             logger.server('Connected to database');
         }
