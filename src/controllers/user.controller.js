@@ -15,7 +15,7 @@ exports.count = async () => {
     return await User.countDocuments({ });
 };
 
-exports.post = async (user) => {
+exports.create = async (user) => {
     const hashedPassword = cryptoUtil.saltHashPassword(user.password);
     return await new User({ 
         username: user.username,
