@@ -11,11 +11,11 @@ router.use((req, res, next) => authenticate(req, res, next));
 router.get('/', async (req, res) => {
     try {
         const wolDevices = await wolDevice.list();
-        logger.info(req, res, `Fetched ${ wolDevices.length } WOL device(s)`);
+        logger.info({ req, res, message: `Fetched ${ wolDevices.length } WOL device(s)` });
         res.status(200).send({ error: null, response: wolDevices });
     } catch (err) {
-        logger.error(req, res, 'Caught unexpected error while fetching WOL devices', err);
-        res.status(500).send({ error: { code: 2000, message: 'An unexpected error occured while fethcing WOL devices' } });
+        logger.error({ req, res, message: 'Caught unexpected error while fetching WOL devices', err });
+        res.status(500).send({ error: { code: 2000, message: 'An unexpected error occured while fethcing WOL devices' }, response: null });
     }
 });
 

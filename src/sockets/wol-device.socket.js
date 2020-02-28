@@ -3,31 +3,39 @@ const logger = require('../utils/logger.util');
 const authentication = require('../authentication');
 const wolDevices = require('../controllers/wol-device.controller');
 
-let shouldPoll = false; // TODO: This is a bad solution, limits clients to 1
-
 module.exports = async (io) => {
     const wolDevicesList = await wolDevices.list();
 
     io.on('connection', (socket) => {
+        logger.audit({ socket, action: 'ON:connection', message: 'Established socket connection' });
+        
         socket.on('authenticate', (data) => {
-            shouldPoll = true;
+            socket.shouldPoll = true;
 
-          if (authentication.verify(data.token)) {
-            socket.emit('authenticated', logger.server('Authenticated client socket'));
+            try {
+                if (authentication.verify(data.token)) {
+                    socket.emit('authenticated', logger.audit({ socket, action: 'EMIT:authenticated', message: 'Authenticated socket connection' }));
+    
+                    wolDevicesList.forEach(wolDevice => {
+                        pollStatus(socket, wolDevice._id);
+                    });
+    
+                    socket.on('wakeWolDevice', (data) => {
+                        logger.audit({ socket, action: 'ON:wakeWolDevice', message: `Wake ${ data._id }` });
+                        wolDevices.wake(data._id);
+                    });
+                }
+            } catch (err) {
+                socket.disconnect();
+                logger.info({ socket, message: `Couldn't authenticate socket` });
+                socket.shouldPoll = false;
+            }
+            
 
-            wolDevicesList.forEach(wolDevice => {
-                pollStatus(socket, wolDevice._id);
+            socket.on('disconnect', () => {
+                socket.shouldPoll = false;
+                logger.audit({ socket, action: 'ON:disconnect', message: 'Socket disconnected' });
             });
-
-            socket.on('wakeWolDevice', (data) => {
-                logger.server(`Attempting to wake ${ data._id }`);
-                wolDevices.wake(data._id);
-            });
-          }
-        });
-
-        socket.on('disconnect', () => {
-            shouldPoll = false;
         });
     });
 };
@@ -36,11 +44,12 @@ module.exports = async (io) => {
 const pollStatus = async (socket, _id) => {
     let currentState, previousState;
 
-    while (shouldPoll) {
+    while (socket.shouldPoll) {
         currentState = await wolDevices.status(_id);
         if (currentState != previousState) {       
             previousState = currentState;
             socket.emit('statusUpdate', { _id, isAwake: currentState });
+            logger.audit({ socket, action: 'EMIT:statusUpdate', message: `Status update to ${ currentState } for ${ _id }` });
         }
         await sleep(1000);
     }
