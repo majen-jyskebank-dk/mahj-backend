@@ -11,6 +11,10 @@ exports.isValid = async (user) => {
     return false;
 };
 
+exports.count = async () => {
+    return await User.countDocuments({ });
+};
+
 exports.post = async (user) => {
     const hashedPassword = cryptoUtil.saltHashPassword(user.password);
     return await new User({ 

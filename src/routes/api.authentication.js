@@ -11,6 +11,12 @@ router.post('/login', async (req, res) => {
     const receivedUser = req.body;
 
     try {
+        if (await user.count() === 0) {
+            logger.info({req, message: 'No user exists in database, assuming setup is in progress.'});
+            logger.info({req, message: `Creating user with username: ${ receivedUser.username }.`});
+            await user.post(receivedUser);
+        }
+
         if (await user.isValid(receivedUser)) {
             const token = authentication.sign({ });
             logger.info({ req, res, message: `Signed token succesfully for user: ${ receivedUser.username }` });
