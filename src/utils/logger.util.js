@@ -52,7 +52,7 @@ exports.info = (parameters) => {
 
 exports.error = (parameters) => {
     if (config.enableError) {
-        if (parameters.req && parameters.res) {
+        if (parameters.req) {
             log('server', `${ getPrefix('ERROR') } ${ parameters.message } | ${ parameters.error } | ${ parameters.req.correlationId }`);
         } else if (parameters.socket) {
             log('server', `${ getPrefix('ERROR') } ${ parameters.message } | ${ parameters.error } | ${ parameters.socket.correlationId }`);
