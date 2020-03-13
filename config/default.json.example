@@ -7,7 +7,9 @@
         "database": "mahj-backend"
     },
     "Node": {
-        "port": 4300
+        "port": 4300,
+        "sslKeyPath": "",
+        "sslCertificatePath": ""
     },
     "Authentication": {
         "issuer": "mahj-backend",
