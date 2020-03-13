@@ -1,5 +1,3 @@
-const config = require('config').get('WOL');
-
 const WolDevice = require('../models/wol-device.model');
 const ping = require('../utils/ping.util');
 const wol = require('../utils/wol.util');
@@ -21,20 +19,22 @@ exports.create = async (wolDevice) => {
         name: wolDevice.name,
         macAddress: wolDevice.macAddress,
         localIpAddress: wolDevice.localIpAddress,
-        sshEnabled: wolDevice.sshEnabled,
+        externalIpAddress: wolDevice.externalIpAddress,
         icon: wolDevice.icon
      }).save()).toObject();
 };
 
 exports.update = async (data) => {
-    return await WolDevice.findByIdAndUpdate(data._id,
+    return await WolDevice.findByIdAndUpdate(
+        data._id,
         {
             name: data.name,
             macAddress: data.macAddress,
             localIpAddress: data.localIpAddress,
-            sshEnabled: data.sshEnabled,
+            externalIpAddress: data.externalIpAddress,
             icon: data.icon
-        }, { useFindAndModify: false }).lean().exec();
+        },
+        { useFindAndModify: false }).lean().exec();
 };
 
 exports.delete = async (_id) => {

@@ -11,14 +11,15 @@ const WolDeviceSchema = new Schema({
         required: true
     },
     localIpAddress: {
-        type: String
+        type: String,
+        required: true
     },
-    sshEnabled: {
-        type: Boolean,
-        default: false
+    externalIpAddress: {
+        type: String,
     },
     icon: {
         type: String,
+        required: true,
         default: 'device_unknown'
     }
 });

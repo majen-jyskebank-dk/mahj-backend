@@ -23,8 +23,5 @@
         "enableError": true,
         "enableAudit": true,
         "enableInfo": false
-    },
-    "WOL": {
-        "pollTries": 25
     }
 }
