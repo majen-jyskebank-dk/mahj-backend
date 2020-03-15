@@ -1,18 +1,14 @@
 const logger = require('./utils/logger.util');
 const config = require('config').get('Node');
-const fs = require('fs');
 
 const app = require('express')();
 const bodyParser = require('body-parser');
-const https = require('https').createServer({
-    key: fs.readFileSync(config.sslKeyPath),
-    cert: fs.readFileSync(config.sslCertificatePath)
-}, app);
+const http = require('http').Server(app);
 
 const api = require('./routes/api');
 
 const cors = require('cors');
-const io = require('socket.io')(https);
+const io = require('socket.io')(http);
 io.use((socket, next) => { logger.addCorrelation({ socket, next }); });
 require('./sockets/wol-device.socket')(io);
 
@@ -34,6 +30,6 @@ app.use((req, res, next) => {
 
 app.use('/api', api);
 
-https.listen(config.port, () => {
+http.listen(config.port, () => {
     logger.server(`Listening on ${config.port}`);
 });
